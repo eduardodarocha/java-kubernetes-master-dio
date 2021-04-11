@@ -102,11 +102,16 @@ Agora, implantamos o aplicativo em um cluster Kubernetes em execução em nossa 
 Preparação
 
 ### Inicializar minikube
-```make k-setup``` inicializa minikube, habilita o ingress e cria o namespace dev-to
+```
+make k-setup
+``` 
+inicializa minikube, habilita o ingress e cria o namespace dev-to
 
 ### Verificar IP
 
-```minikube -p dev.to ip```
+```
+minikube -p dev.to ip
+```
 
 ### Minikube dashboard
 
@@ -235,7 +240,9 @@ done
 ```
 
 ## Verificar a url do aplicativo
-```minikube -p dev.to service -n dev-to myapp --url```
+```
+minikube -p dev.to service -n dev-to myapp --url
+```
 
 Troque seu IP e PORT conforme sua necessidade
 ```
