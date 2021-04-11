@@ -277,8 +277,9 @@ stern myapp
 
 ## Inicializar tudo
 
-```make k:all```
-
+```
+make k:all
+```
 
 ## Referências
 
