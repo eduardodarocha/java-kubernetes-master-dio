@@ -179,6 +179,7 @@ minikube -p dev.to service -n dev-to myapp --url
 ```
 
 http://172.17.0.5:32594/app/users
+
 http://172.17.0.5:32594/app/hello
 
 ## Verificação os pods
