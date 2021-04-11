@@ -1,55 +1,61 @@
-# Java and Kubernetes
+# Java, Docker e Kubernetes
 
-Show how you can move your spring boot application to docker and kubernetes.
-This project is a demo for the series of posts on dev.to
-https://dev.to/sandrogiacom/kubernetes-for-java-developers-setup-41nk
 
-## Part one - base app:
+Rodando sua aplicação Java no Kubernetes. Do deploy ao debug sem medo!
 
-### Requirements:
+Neste projeto foi criado o desafio de construir um ambiente Kubernetes local para que possamos aprender a tecnologia, mostrando como 
+mover uma aplicação java/spring boot para o Docker e Kubernetes, sem medo de errar. 
+Foram criados os recursos necessários para fazer o deploy no cluster e configurar a aplicação a fim de fazer o debug enquanto ela está 
+rodando no Kubernetes.
 
-**Docker and Make (Optional)**
+
+
+## Parte 1 - Aplicativo base:
+
+### Requerimentos:
+
+**Docker e Make (Opcional)**
 
 **Java 14**
 
-Help to install tools:
+Ajuda para instalar as ferramentas:
 
 https://github.com/sandrogiacom/k8s
 
-### Build and run application:
+### Build e execução da aplicação:
 
-Spring boot and mysql database running on docker
+Spring boot e banco de dados mysql executando no docker
 
-**Clone from repository**
+**Clone do repositório**
 ```bash
 git clone https://github.com/sandrogiacom/java-kubernetes.git
 ```
 
-**Build application**
+**Build da aplicação**
 ```bash
 cd java-kubernetes
 mvn clean install
 ```
 
-**Start the database**
+**Inicializar o banco de dados**
 ```bash
 make run-db
 ```
 
-**Run application**
+**Executar a aplicação**
 ```bash
 java --enable-preview -jar target/java-kubernetes.jar
 ```
 
-**Check**
+**Verificação**
 
 http://localhost:8080/app/users
 
 http://localhost:8080/app/hello
 
-## Part two - app on Docker:
+## Parte 2 - Aplicativo no Docker:
 
-Create a Dockerfile:
+Criando um Dockerfile:
 
 ```yaml
 FROM openjdk:14-alpine
@@ -60,45 +66,45 @@ EXPOSE 8080
 ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar app.jar" ]
 ```
 
-**Build application and docker image**
+**Build da aplicação e imagem do docker**
 
 ```bash
 make build
 ```
 
-Create and run the database
+Criando e executando o banco de dados
 ```bash
 make run-db
 ```
 
-Create and run the application
+Criando e executando a aplicação
 ```bash
 make run-app
 ```
 
-**Check**
+**Verificação**
 
 http://localhost:8080/app/users
 
 http://localhost:8080/app/hello
 
-Stop all:
+Parar tudo(banco de dados e aplicação):
 
 `
 docker stop mysql57 myapp
 `
 
-## Part three - app on Kubernetes:
+## Parte 3 - Aplicativo no Kubernetes:
 
-We have an application and image running in docker
-Now, we deploy application in a kubernetes cluster running in our machine
+Temos um aplicativo e uma imagem em execução no docker
+Agora, implantamos o aplicativo em um cluster Kubernetes em execução em nossa máquina
 
-Prepare
+Preparação
 
-### Start minikube
-`make k-setup` start minikube, enable ingress and create namespace dev-to
+### Inicializar minikube
+`make k-setup` inicializa minikube, habilita o ingress e cria o namespace dev-to
 
-### Check IP
+### Verificar IP
 
 `minikube -p dev.to ip`
 
@@ -108,9 +114,9 @@ Prepare
 minikube -p dev.to dashboard
 `
 
-### Deploy database
+### Implantação do banco de dados
 
-create mysql deployment and service
+Criação e implantação do mysql e do serviço
 
 `
 make k-deploy-db
@@ -128,7 +134,7 @@ kubectl logs -n dev-to -f <pod_name>
 kubectl port-forward -n dev-to <pod_name> 3306:3306
 `
 
-## Build application and deploy
+## Build da aplicação e implantação
 
 build app
 
@@ -136,32 +142,32 @@ build app
 make k-build-app
 ` 
 
-create docker image inside minikube machine:
+Criar a imagem do docker dentro da instância do minikube:
 
 `
 make k-build-image
 `
 
-OR
+OU
 
 `
 minikube cache add java-k8s
 `  
 
 
-create app deployment and service:
+criação e implantação do serviço do aplicativo:
 
 `
 make k-deploy-app
 ` 
 
-**Check**
+**Verificação**
 
 `
 kubectl get services -n dev-to
 `
 
-To access app:
+Para acessar o aplicativo:
 
 `
 minikube -p dev.to service -n dev-to myapp --url
@@ -170,7 +176,7 @@ minikube -p dev.to service -n dev-to myapp --url
 http://172.17.0.5:32594/app/users
 http://172.17.0.5:32594/app/hello
 
-## Check pods
+## Verificação os pods
 
 `
 kubectl get pods -n dev-to
@@ -180,14 +186,14 @@ kubectl get pods -n dev-to
 kubectl -n dev-to logs myapp-6ccb69fcbc-rqkpx
 `
 
-## Map to dev.local
+## Mapear para dev.local
 
-get minikube IP
+obter o IP do minikube
 `
 minikube -p dev.to ip
 ` 
 
-Edit `hosts` 
+Editar `hosts` 
 
 `
 sudo vim /etc/hosts
@@ -198,7 +204,7 @@ Replicas
 kubectl get rs -n dev-to
 `
 
-Get and Delete pod
+Obter e Deletar pod
 `
 kubectl get pods -n dev-to
 `
@@ -207,12 +213,12 @@ kubectl get pods -n dev-to
 kubectl delete pod -n dev-to myapp-f6774f497-82w4r
 `
 
-Scale
+Escalar(Scale)
 `
 kubectl -n dev-to scale deployment/myapp --replicas=2
 `
 
-Test replicas
+Testar replicas
 `
 while true
 do curl "http://dev.local/app/hello"
@@ -220,7 +226,7 @@ echo
 sleep 2
 done
 `
-Test replicas with wait
+Testar replicas com wait
 
 `
 while true
@@ -229,16 +235,16 @@ echo
 done
 `
 
-## Check app url
+## Verificar a url do aplicativo
 `minikube -p dev.to service -n dev-to myapp --url`
 
-Change your IP and PORT as you need it
+Troque seu IP e PORT conforme sua necessidade
 
 `
 curl -X GET http://dev.local/app/users
 `
 
-Add new User
+Adicionar novo Usuário
 `
 curl --location --request POST 'http://dev.local/app/users' \
 --header 'Content-Type: application/json' \
@@ -248,10 +254,10 @@ curl --location --request POST 'http://dev.local/app/users' \
 }'
 `
 
-## Part four - debug app:
+## Parte 4 - debug do aplicativo:
 
-add   JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n -Xms256m -Xmx512m -XX:MaxMetaspaceSize=128m"
-change CMD to ENTRYPOINT on Dockerfile
+Adicionar  JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n -Xms256m -Xmx512m -XX:MaxMetaspaceSize=128m"
+Mudificar CMD para ENTRYPOINT no Dockerfile
 
 `
 kubectl get pods -n=dev-to
@@ -261,7 +267,7 @@ kubectl get pods -n=dev-to
 kubectl port-forward -n=dev-to <pod_name> 5005:5005
 `
 
-## KubeNs and Stern
+## KubeNs e Stern
 
 `
 kubens dev-to
@@ -271,12 +277,14 @@ kubens dev-to
 stern myapp
 ` 
 
-## Start all
+## Inicializar tudo
 
 `make k:all`
 
 
-## References
+## Referências
+
+https://dev.to/sandrogiacom/kubernetes-for-java-developers-setup-41nk
 
 https://kubernetes.io/docs/home/
 
